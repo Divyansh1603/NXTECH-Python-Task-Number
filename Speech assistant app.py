@@ -41,6 +41,9 @@ def respond(voice_data):
     if 'what time is it' in voice_data:
         trex_speak(ctime())
 
+    if 'tell me what is my birthdate' in voice_data:
+        trex_speak('16th August 2003')
+        
     if 'search' in voice_data:
        search = record_audio('what do you want to search for')
        url = "https://google.com/search?q=" + search
