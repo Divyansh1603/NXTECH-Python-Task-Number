@@ -2,12 +2,10 @@ import speech_recognition as sr
 import pyttsx3
 import webbrowser
 import time
-import openai
 
 # Initialize the recognizer and engine
 recognizer = sr.Recognizer()
 engine = pyttsx3.init()
-openai.api_key = "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"
 
 # Set the name of the voice assistant
 assistant_name = "TREX"
@@ -46,38 +44,20 @@ def process_query(query):
             search_url = "https://www.google.com/search?q=" + search_query.replace(" ", "+")
             webbrowser.open(search_url)
     elif "find location" in query:
-        speak("Sure, which location do you want to find?")
-        location_query = listen()
-        if location_query:
-            url = "https://www.google.com/maps/search/" + location_query.replace(" ", "+")
-            webbrowser.open(url)
+        while True:
+            speak("Sure, which location do you want to find?")
+            location_query = listen()
+            if location_query:
+                url = "https://www.google.com/maps/search/" + location_query.replace(" ", "+")
+                webbrowser.open(url)
+                break
+            else:
+                speak("I'm sorry, I didn't get that. Could you please repeat the location?")
     elif "what is your name" in query:
         speak(f"I am {assistant_name}. How can I assist you?")
-    elif "solve problem" in query:
-        speak("Sure, please provide the problem statement or question.")
-        problem = listen()
-        if problem:
-            response = solve_problem(problem)
-            speak(response)
     else:
         time.sleep(1)  # Delay before asking for clarification
         speak("I'm sorry, I didn't understand your command. Could you please repeat or provide more information?")
-
-def solve_problem(problem):
-    # Generate a solution using ChatGPT
-    response = openai.Completion.create(
-        engine="text-davinci-003",
-        prompt=problem,
-        max_tokens=100,
-        n=1,
-        stop=None,
-        temperature=0.7,
-        frequency_penalty=0,
-        presence_penalty=0,
-        timeout=15,
-    )
-    solution = response.choices[0].text.strip()
-    return solution
 
 # Main loop
 time.sleep(1)
