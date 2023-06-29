@@ -39,7 +39,7 @@ def respond(voice_data):
         trex_speak('My name is Trex')
 
     if 'what time is it' in voice_data:
-        trex_speak(ctime(min))
+        trex_speak(ctime())
 
     if 'when is my birthday' in voice_data:
         trex_speak('16th August 2003')
