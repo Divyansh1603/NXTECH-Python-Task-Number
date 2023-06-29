@@ -34,12 +34,13 @@ def trex_speak(audio_string):
 
 
 
-
 def respond(voice_data):
     if 'what is your name' in voice_data:
         trex_speak('My name is Trex')
+
     if 'what time is it' in voice_data:
         trex_speak(ctime())
+
     if 'search' in voice_data:
        search = record_audio('what do you want to search for')
        url = "https://google.com/search?q=" + search
