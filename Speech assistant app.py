@@ -41,7 +41,7 @@ def respond(voice_data):
     if 'what time is it' in voice_data:
         trex_speak(ctime())
 
-    if 'what is my birthdate' in voice_data:
+    if 'when is my birthday' in voice_data:
         trex_speak('16th August 2003')
 
     if 'search' in voice_data:
