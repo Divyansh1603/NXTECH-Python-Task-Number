@@ -7,10 +7,10 @@ import openai
 # Initialize the recognizer and engine
 recognizer = sr.Recognizer()
 engine = pyttsx3.init()
-openai.api_key = "<YOUR_OPENAI_API_KEY>"
+openai.api_key = "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"
 
 # Set the name of the voice assistant
-assistant_name = "Trex"
+assistant_name = "TREX"
 
 def speak(text):
     engine.say(text)
@@ -60,8 +60,8 @@ def process_query(query):
             response = solve_problem(problem)
             speak(response)
     else:
-        time.sleep(1)  # Delay before apologizing for not understanding
-        speak("I'm sorry, I didn't understand your command.")
+        time.sleep(1)  # Delay before asking for clarification
+        speak("I'm sorry, I didn't understand your command. Could you please repeat or provide more information?")
 
 def solve_problem(problem):
     # Generate a solution using ChatGPT
