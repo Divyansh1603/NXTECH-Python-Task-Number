@@ -1,61 +1,86 @@
 import speech_recognition as sr
+import pyttsx3
 import webbrowser
 import time
-import playsound
-import random
-import os
-from gtts import gTTS
-from time import ctime
+import openai
 
-r = sr.Recognizer()
+# Initialize the recognizer and engine
+recognizer = sr.Recognizer()
+engine = pyttsx3.init()
+openai.api_key = "<YOUR_OPENAI_API_KEY>"
 
-def record_audio(ask=False):
+# Set the name of the voice assistant
+assistant_name = "Trex"
+
+def speak(text):
+    engine.say(text)
+    engine.runAndWait()
+
+def listen():
     with sr.Microphone() as source:
-        if ask:
-            trex_speak(ask)
-        audio = r.listen(source)
-        voice_data = ''
-        try:
-            voice_data = r.recognize_google(audio)
-        except sr.UnknownValueError:
-            trex_speak("Sorry, I didn't get that")
-        except sr.RequestError:
-            trex_speak("Sorry, my speech service is down")
-        return voice_data
+        print("Listening...")
+        audio = recognizer.listen(source)
 
-def trex_speak(audio_string):
-    tts = gTTS(text=audio_string, lang='en')
-    r = random.randint(1, 100)
-    audio_file = f'audio-{r}.mp3'
-    tts.save(audio_file)
-    playsound.playsound(audio_file)
-    print(audio_string)
-    os.remove(audio_file)
+    try:
+        print("Recognizing...")
+        query = recognizer.recognize_google(audio)
+        print(f"User said: {query}")
+        return query
+    except sr.UnknownValueError:
+        print("Sorry, I didn't catch that. Could you please repeat?")
+        return ""
+    except sr.RequestError:
+        print("Sorry, I'm having trouble recognizing your speech. Please try again later.")
+        return ""
 
-def respond(voice_data):
-    if 'what is your name' in voice_data:
-        trex_speak('My name is Trex')
-
-    if 'what time is it' in voice_data:
-        trex_speak(ctime())
-
-    if 'search' in voice_data:
-        search = record_audio('What do you want to search for?')
-        url = f"https://google.com/search?q={search}"
-        webbrowser.get().open(url)
-        trex_speak(f'Here is what I found for {search}')
-
-    if 'find location' in voice_data:
-        location = record_audio('What is the location?')
-        url = f"https://google.nl/maps/place/{location}/&amp;"
-        webbrowser.get().open(url)
-        trex_speak(f'Here is the location of {location}')
-
-    if 'exit' in voice_data:
+def process_query(query):
+    if "hello" in query:
+        speak(f"Hello! How can I assist you, {assistant_name} speaking?")
+    elif "exit" in query:
+        speak("Goodbye!")
         exit()
+    elif "search" in query:
+        speak("What can I search for you?")
+        search_query = listen()
+        if search_query:
+            search_url = "https://www.google.com/search?q=" + search_query.replace(" ", "+")
+            webbrowser.open(search_url)
+    elif "find location" in query:
+        speak("Sure, which location do you want to find?")
+        location_query = listen()
+        if location_query:
+            url = "https://www.google.com/maps/search/" + location_query.replace(" ", "+")
+            webbrowser.open(url)
+    elif "what is your name" in query:
+        speak(f"I am {assistant_name}. How can I assist you?")
+    elif "solve problem" in query:
+        speak("Sure, please provide the problem statement or question.")
+        problem = listen()
+        if problem:
+            response = solve_problem(problem)
+            speak(response)
+    else:
+        time.sleep(1)  # Delay before apologizing for not understanding
+        speak("I'm sorry, I didn't understand your command.")
 
+def solve_problem(problem):
+    # Generate a solution using ChatGPT
+    response = openai.Completion.create(
+        engine="text-davinci-003",
+        prompt=problem,
+        max_tokens=100,
+        n=1,
+        stop=None,
+        temperature=0.7,
+        frequency_penalty=0,
+        presence_penalty=0,
+        timeout=15,
+    )
+    solution = response.choices[0].text.strip()
+    return solution
+
+# Main loop
 time.sleep(1)
-trex_speak("How can I help you?")
 while True:
-    voice_data = record_audio()
-    respond(voice_data)
+    query = listen().lower()
+    process_query(query)
