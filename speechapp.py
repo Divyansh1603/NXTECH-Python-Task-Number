@@ -1,5 +1,7 @@
 import speech_recognition as sr
 import pyttsx3
+import spotipy
+from spotipy.oauth2 import SpotifyOAuth
 import webbrowser
 import time
 
@@ -9,6 +11,15 @@ engine = pyttsx3.init()
 
 # Set the name of the voice assistant
 assistant_name = "TREX"
+
+# Spotify credentials
+client_id = "YOUR_CLIENT_ID"
+client_secret = "YOUR_CLIENT_SECRET"
+redirect_uri = "YOUR_REDIRECT_URI"
+
+# Create a Spotify client instance
+scope = "user-modify-playback-state"
+sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=client_id, client_secret=client_secret, redirect_uri=redirect_uri, scope=scope))
 
 def speak(text):
     engine.say(text)
@@ -55,6 +66,31 @@ def process_query(query):
                 speak("I'm sorry, I didn't get that. Could you please repeat the location?")
     elif "what is your name" in query:
         speak(f"I am {assistant_name}. How can I assist you?")
+    elif "play song" in query:
+        speak("Sure, what song would you like to listen to?")
+        song_query = listen()
+        if song_query:
+            search_results = sp.search(q=song_query, limit=1, type="track")
+            if search_results and search_results["tracks"]["items"]:
+                track_uri = search_results["tracks"]["items"][0]["uri"]
+                sp.start_playback(uris=[track_uri])
+                speak(f"Now playing {song_query} on Spotify.")
+            else:
+                speak("Sorry, I couldn't find the requested song on Spotify.")
+        else:
+            speak("I'm sorry, I didn't catch the song name. Could you please repeat?")
+    elif "pause" in query:
+        sp.pause_playback()
+        speak("Playback paused.")
+    elif "resume" in query:
+        sp.start_playback()
+        speak("Playback resumed.")
+    elif "next" in query:
+        sp.next_track()
+        speak("Playing next track.")
+    elif "previous" in query:
+        sp.previous_track()
+        speak("Playing previous track.")
     else:
         time.sleep(1)  # Delay before asking for clarification
         speak("I'm sorry, I didn't understand your command. Could you please repeat or provide more information?")
