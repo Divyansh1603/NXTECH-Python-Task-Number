@@ -66,7 +66,7 @@ def process_query(query):
             speak("I'm sorry, I didn't catch the song name. Could you please repeat?")
     else:
         time.sleep(1)  # Delay before asking for clarification
-        speak("I'm sorry, I didn't understand your command. Could you please repeat or provide more information?")
+        speak("I'm sorry, I didn't understand your command.")
 
 # Main loop
 time.sleep(1)
