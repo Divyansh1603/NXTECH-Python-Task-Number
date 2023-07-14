@@ -36,9 +36,6 @@ def process_query(query):
         speak(f"Hello! How can I assist you, {assistant_name} speaking?")
     elif "what is your name" in query:
         speak(f"I am {assistant_name}. How can I assist you?")
-    elif "exit" in query:
-        speak("Goodbye!")
-        exit()
     elif "search" in query:
         speak("What can I search for you?")
         search_query = listen()
@@ -64,6 +61,9 @@ def process_query(query):
             speak("I've opened Spotify for you. Please select and play the song manually.")
         else:
             speak("I'm sorry, I didn't catch the song name. Could you please repeat?")
+    elif "exit" in query:
+        speak("Goodbye!")
+        exit()
     else:
         time.sleep(1)  # Delay before asking for clarification
         speak("I'm sorry, I didn't understand your command.")
