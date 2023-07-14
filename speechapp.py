@@ -34,6 +34,8 @@ def listen():
 def process_query(query):
     if "hello" in query:
         speak(f"Hello! How can I assist you, {assistant_name} speaking?")
+    elif "what is your name" in query:
+        speak(f"I am {assistant_name}. How can I assist you?")
     elif "exit" in query:
         speak("Goodbye!")
         exit()
@@ -53,8 +55,6 @@ def process_query(query):
                 break
             else:
                 speak("I'm sorry, I didn't get that. Could you please repeat the location?")
-    elif "what is your name" in query:
-        speak(f"I am {assistant_name}. How can I assist you?")
     elif "play song" in query:
         speak("Sure, what song would you like to listen to?")
         song_query = listen()
