@@ -3,11 +3,11 @@ import pyttsx3
 import webbrowser
 import time
 
-# Initialize the recognizer and engine
+
 recognizer = sr.Recognizer()
 engine = pyttsx3.init()
 
-# Set the name of the voice assistant
+# Voice assistant name
 assistant_name = "TREX"
 
 def speak(text):
@@ -68,8 +68,28 @@ def process_query(query):
         time.sleep(1)  # Delay before asking for clarification
         speak("I'm sorry, I didn't understand your command.")
 
-# Main loop
-time.sleep(1)
-while True:
-    query = listen().lower()
-    process_query(query)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        # Try different webcam indices until a valid one is found
+        webcam_index = 0
+        while True:
+            self.cap = cv2.VideoCapture(webcam_index)
+            if self.cap.isOpened():
+                break
+            webcam_index += 1
